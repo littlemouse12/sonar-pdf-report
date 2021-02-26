@@ -11,6 +11,10 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'test_code_scan'
+    scannerMode: 'Other'
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
@@ -21,8 +25,11 @@ steps:
     mavenOptions: '-Xmx3072m'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
-    sonarQubeRunAnalysis: false
-
+    sonarQubeRunAnalysis: true
+    sqMavenPluginVersionChoice: 'latest'
+- task: SonarQubePublish@4
+  inputs:
+    pollingTimeoutSec: '300'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
